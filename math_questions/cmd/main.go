@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"sync"
 
-	"main/pkg/types"
-	"main/pkg/usecase/student"
-	"main/pkg/usecase/teacher"
+	"main/pkg/question"
+	"main/pkg/student"
+	"main/pkg/teacher"
 )
 
 func main() {
-	questionCh := make(chan types.Question)
+	questionCh := make(chan question.Question)
 	teacher := teacher.New()
 	go teacher.AskQuestion(questionCh)
 
@@ -32,9 +32,13 @@ func main() {
 	close(answererCh)
 
 	winner := <-winnerCh
-	for _, student := range students {
-		if student.Name != winner {
-			fmt.Printf("Student %s: %s, you win.\n", student.Name, winner)
+	if len(winner) == 0 {
+		fmt.Printf("Teacher: Boooo~ Answer is %.2f.\n", teacher.Answer)
+	} else {
+		for _, student := range students {
+			if student.Name != winner {
+				fmt.Printf("Student %s: %s, you win.\n", student.Name, winner)
+			}
 		}
 	}
 }

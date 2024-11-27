@@ -2,21 +2,11 @@ package utils
 
 import (
 	"math"
-	"math/rand/v2"
 
-	"main/pkg/types"
+	"main/pkg/question"
 )
 
-func RandNumber(min, max int) int {
-	return rand.IntN(max-min) + min
-}
-
-func RandOperator() string {
-	ops := []string{"+", "-", "*", "/"}
-	return ops[rand.IntN(len(ops))]
-}
-
-func CalculateAnswer(question types.Question) float32 {
+func CalculateAnswer(question question.Question) float32 {
 	var ans float32
 
 	switch question.Operator {
