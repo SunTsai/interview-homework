@@ -2,18 +2,43 @@ package main
 
 import (
 	"fmt"
+	"sync"
+	"time"
 
+	"main/pkg/types"
 	"main/pkg/usecase/student"
 	"main/pkg/usecase/teacher"
 )
 
 func main() {
+	questionCh := make(chan types.Question)
+	winnerCh := make(chan string)
+	done := make(chan struct{})
+
+	students := make([]*student.Student, 5)
+	for i := range len(students) {
+		students[i] = student.New(string('A'+i), questionCh, winnerCh, done)
+	}
+
+	wg := &sync.WaitGroup{}
+	wg.Add(len(students))
+	for _, student := range students {
+		go student.Answer(wg)
+	}
+
 	teacher := teacher.New()
 	fmt.Println("Teacher: Guys, are you ready?")
-	question := teacher.CreateQuestion()
-	fmt.Printf("Teacher: %d %s %d = ?\n", question.Num0, question.Operator, question.Num1)
+	time.Sleep(3 * time.Second)
+	teacher.AskQuestion(questionCh)
 
-	student := student.New()
-	ans := student.Answer(question)
-	fmt.Println(ans)
+	winner := <-winnerCh
+	fmt.Printf("Teacher: %s, you are right!\n", winner)
+
+	close(done)
+	wg.Wait()
+	for _, student := range students {
+		if student.Name != winner {
+			fmt.Printf("Student %s: %s, you win.\n", student.Name, winner)
+		}
+	}
 }
