@@ -10,7 +10,7 @@ import (
 )
 
 type Teacher struct {
-	Answer   float32
+	Answer   interface{}
 	question question.Question
 }
 
@@ -41,12 +41,11 @@ func (t *Teacher) CheckAnswer(studentAmount int, answererCh <-chan *student.Stud
 			fmt.Printf("Teacher: %s, you are wrong!\n", answerer.Name)
 			answered[answerer.Name] = true
 			if len(answered) == studentAmount {
-				winnerCh <- ""
 				close(questionCh)
+				winnerCh <- ""
 			} else {
 				questionCh <- t.question
 			}
 		}
 	}
-
 }

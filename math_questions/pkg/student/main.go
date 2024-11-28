@@ -12,7 +12,7 @@ import (
 
 type Student struct {
 	Name   string
-	Answer float32
+	Answer interface{}
 }
 
 func New(name string) *Student {
@@ -28,11 +28,13 @@ func (s *Student) ListeningAndAnswer(wg *sync.WaitGroup, questionCh <-chan quest
 		time.Sleep(thinkTime)
 
 		ans := utils.CalculateAnswer(q)
-		if rand.IntN(10)%2 == 0 {
+		if rand.IntN(2) == 0 {
 			ans = utils.CalculateAnswer(question.New())
 		}
 
-		fmt.Printf("Student %s: %d %s %d = %.2f!\n", s.Name, q.Num0, q.Operator, q.Num1, ans)
+		ansStr := utils.ParseAnswer(ans)
+		fmt.Printf("Student %s: %d %s %d = %s!\n", s.Name, q.Num0, q.Operator, q.Num1, ansStr)
+
 		s.Answer = ans
 		answererCh <- s
 	}

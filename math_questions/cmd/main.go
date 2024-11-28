@@ -7,6 +7,7 @@ import (
 	"main/pkg/question"
 	"main/pkg/student"
 	"main/pkg/teacher"
+	"main/pkg/utils"
 )
 
 func main() {
@@ -34,7 +35,8 @@ func main() {
 
 	winner := <-winnerCh
 	if len(winner) == 0 {
-		fmt.Printf("Teacher: Boooo~ Answer is %.2f.\n", teacher.Answer)
+		ansStr := utils.ParseAnswer(teacher.Answer)
+		fmt.Printf("Teacher: Boooo~ Answer is %s.\n", ansStr)
 	} else {
 		for _, student := range students {
 			if student.Name != winner {
