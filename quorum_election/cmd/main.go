@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -23,5 +24,39 @@ func main() {
 
 	fmt.Printf("Starting quorum with %d members\n", memberAmount)
 
-	hub.New(memberAmount)
+	hub := hub.New(memberAmount)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	signalCh := make(chan string)
+	go hub.Heartbeat(ctx, signalCh)
+	go func(ctx context.Context) {
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case signal := <-signalCh:
+				fmt.Println(signal)
+			}
+		}
+	}(ctx)
+
+	hub.ElectLeader()
+
+	for {
+		var command string
+		var id int
+		if _, err := fmt.Scanln(&command, &id); err != nil {
+			fmt.Println("Failed to read command")
+			continue
+		}
+
+		switch command {
+		case "kill":
+			hub.RemoveMember(id)
+		default:
+			fmt.Println("Unknown command")
+		}
+	}
 }
