@@ -30,7 +30,7 @@ func (t *Teacher) AskQuestion(questionCh chan question.Question) {
 	t.Answer = utils.CalculateAnswer(question)
 }
 
-func (t *Teacher) CheckAnswer(answererCh <-chan *student.Student, questionCh chan<- question.Question, winnerCh chan string) {
+func (t *Teacher) CheckAnswer(studentAmount int, answererCh <-chan *student.Student, questionCh chan<- question.Question, winnerCh chan string) {
 	answered := make(map[string]bool)
 	for answerer := range answererCh {
 		if answerer.Answer == t.Answer {
@@ -40,7 +40,7 @@ func (t *Teacher) CheckAnswer(answererCh <-chan *student.Student, questionCh cha
 		} else {
 			fmt.Printf("Teacher: %s, you are wrong!\n", answerer.Name)
 			answered[answerer.Name] = true
-			if len(answered) == 5 {
+			if len(answered) == studentAmount {
 				winnerCh <- ""
 				close(questionCh)
 			} else {

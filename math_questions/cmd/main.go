@@ -14,7 +14,8 @@ func main() {
 	teacher := teacher.New()
 	go teacher.AskQuestion(questionCh)
 
-	students := make([]*student.Student, 5)
+	const studentAmount = 5
+	students := make([]*student.Student, studentAmount)
 	for i := range len(students) {
 		students[i] = student.New(string('A' + i))
 	}
@@ -27,7 +28,7 @@ func main() {
 	}
 
 	winnerCh := make(chan string)
-	go teacher.CheckAnswer(answererCh, questionCh, winnerCh)
+	go teacher.CheckAnswer(studentAmount, answererCh, questionCh, winnerCh)
 	wg.Wait()
 	close(answererCh)
 
