@@ -34,13 +34,19 @@ func (h *Hub) Heartbeat(ctx context.Context, signalCh chan string) {
 				default:
 					if sender.IsAlive {
 						for _, receiver := range h.members {
-							if sender.ID != receiver.ID && !receiver.IsAlive {
-								if !inactiveMembers[receiver.ID] {
-									signalCh <- fmt.Sprintf("Member %d: failed heartbeat with Member %d", sender.ID, receiver.ID)
-									inactiveMembers[receiver.ID] = true
+							if sender.ID != receiver.ID {
+								if receiver.IsAlive {
+									signalCh <- ""
+								} else if !receiver.IsAlive {
+									if !inactiveMembers[receiver.ID] {
+										signalCh <- fmt.Sprintf("Member %d: failed heartbeat with Member %d", sender.ID, receiver.ID)
+										inactiveMembers[receiver.ID] = true
+									}
 								}
 							}
 						}
+					} else {
+						return
 					}
 					time.Sleep(time.Second)
 				}
@@ -63,6 +69,9 @@ func (h *Hub) ElectLeader() {
 }
 
 func (h *Hub) RemoveMember(id int) {
+	if !h.members[id].IsAlive {
+		fmt.Printf("Member %d was already killed before\n", id)
+	}
 	h.members[id].IsAlive = false
 	// if id is leader
 	// elect new leader

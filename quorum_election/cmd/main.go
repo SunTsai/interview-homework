@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"interview/quorum/election/pkg/hub"
 )
@@ -32,12 +33,19 @@ func main() {
 	signalCh := make(chan string)
 	go hub.Heartbeat(ctx, signalCh)
 	go func(ctx context.Context) {
+		timeout := time.After(5 * time.Second)
 		for {
 			select {
 			case <-ctx.Done():
 				return
 			case signal := <-signalCh:
-				fmt.Println(signal)
+				if len(signal) > 0 {
+					fmt.Println(signal)
+				}
+				timeout = time.After(5 * time.Second)
+			case <-timeout:
+				fmt.Println("No signal received, canceling the quorum.")
+				return
 			}
 		}
 	}(ctx)
