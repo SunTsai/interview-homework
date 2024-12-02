@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"main/pkg/question"
-	"main/pkg/utils"
+	"interview/math/questions/pkg/question"
+	"interview/math/questions/pkg/utils"
 )
 
 type Student struct {

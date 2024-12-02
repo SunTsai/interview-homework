@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"main/pkg/question"
-	"main/pkg/student"
-	"main/pkg/utils"
+	"interview/math/questions/pkg/question"
+	"interview/math/questions/pkg/student"
+	"interview/math/questions/pkg/utils"
 )
 
 type Teacher struct {
@@ -30,7 +30,7 @@ func (t *Teacher) AskQuestion(questionCh chan question.Question) {
 	t.Answer = utils.CalculateAnswer(question)
 }
 
-func (t *Teacher) CheckAnswer(studentAmount int, answererCh <-chan *student.Student, questionCh chan<- question.Question, winnerCh chan string) {
+func (t *Teacher) CheckAnswer(studentCount int, answererCh <-chan *student.Student, questionCh chan<- question.Question, winnerCh chan string) {
 	answered := make(map[string]bool)
 	for answerer := range answererCh {
 		if answerer.Answer == t.Answer {
@@ -40,7 +40,7 @@ func (t *Teacher) CheckAnswer(studentAmount int, answererCh <-chan *student.Stud
 		} else {
 			fmt.Printf("Teacher: %s, you are wrong!\n", answerer.Name)
 			answered[answerer.Name] = true
-			if len(answered) == studentAmount {
+			if len(answered) == studentCount {
 				close(questionCh)
 				winnerCh <- ""
 			} else {

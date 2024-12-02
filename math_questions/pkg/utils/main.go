@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math"
 
-	"main/pkg/question"
+	"interview/math/questions/pkg/question"
 )
 
 func CalculateAnswer(question question.Question) interface{} {

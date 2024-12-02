@@ -1,6 +1,8 @@
 package member
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Member struct {
 	ID       int

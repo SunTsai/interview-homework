@@ -3,8 +3,9 @@ package hub
 import (
 	"context"
 	"fmt"
-	"main/pkg/member"
 	"time"
+
+	"interview/quorum/election/pkg/member"
 )
 
 type Hub struct {

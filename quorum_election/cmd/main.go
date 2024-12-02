@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 
-	"main/pkg/hub"
+	"interview/quorum/election/pkg/hub"
 )
 
 func main() {

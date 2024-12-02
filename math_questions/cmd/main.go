@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"sync"
 
-	"main/pkg/question"
-	"main/pkg/student"
-	"main/pkg/teacher"
-	"main/pkg/utils"
+	"interview/math/questions/pkg/question"
+	"interview/math/questions/pkg/student"
+	"interview/math/questions/pkg/teacher"
+	"interview/math/questions/pkg/utils"
 )
 
 func main() {
@@ -15,8 +15,8 @@ func main() {
 	teacher := teacher.New()
 	go teacher.AskQuestion(questionCh)
 
-	const studentAmount = 5
-	students := make([]*student.Student, studentAmount)
+	const studentCount = 5
+	students := make([]*student.Student, studentCount)
 	for i := range len(students) {
 		students[i] = student.New(string('A' + i))
 	}
@@ -29,7 +29,7 @@ func main() {
 	}
 
 	winnerCh := make(chan string)
-	go teacher.CheckAnswer(studentAmount, answererCh, questionCh, winnerCh)
+	go teacher.CheckAnswer(studentCount, answererCh, questionCh, winnerCh)
 	wg.Wait()
 	close(answererCh)
 
