@@ -12,8 +12,12 @@ case $1 in
   2)
     DIRECTORY="quorum_election"
     ;;
+  3)
+    DIRECTORY="raid_demo"
+    ;;
   *)
-    echo "Invalid problem number. Use 1 for math_questions, 2 for quorum_election."
+    echo "Invalid problem number."
+    echo "Use 1 for math_questions, 2 for quorum_election and 3 for raid_demo."
     exit 1
     ;;
 esac
